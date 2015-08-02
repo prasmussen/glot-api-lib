@@ -6,6 +6,10 @@ import (
     "encoding/json"
 )
 
+type RunRequest struct {
+    Files []*File `json:"files"`
+}
+
 type File struct {
     Name string `json:"name"`
     Content string `json:"content"`
@@ -65,7 +69,8 @@ func Run(url, token string, files []*File) (*RunResult, error) {
 
     // Start async writer
     go func() {
-        json.NewEncoder(jsonWriter).Encode(files)
+        runRequest := &RunRequest{files}
+        json.NewEncoder(jsonWriter).Encode(runRequest)
         jsonWriter.Close()
     }()
 
